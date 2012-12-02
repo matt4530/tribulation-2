@@ -185,7 +185,7 @@ package com.profusiongames.trib.beings
 					y = bottomRight.y - _halfHeight - .01;
 				}
 			}
-			trace(this.transformationMatrix);
+			//trace(this.transformationMatrix);
 		}
 		
 		public function pointFlashlight():void 

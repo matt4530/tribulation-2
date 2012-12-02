@@ -74,6 +74,9 @@ package starling.extensions.lighting.core
 		private var indices:Vector.<uint> = new <uint>[];
 		private var totalEdgeCount:uint = 0;
 		
+		private var _shiftX:Number = 0;
+		private var _shiftY:Number = 0;
+		
 		/**
 		 * v0.1
 		 * 
@@ -150,6 +153,12 @@ package starling.extensions.lighting.core
 
 			sceneShader = new LightMapShader(_width / legalWidth, _height / legalHeight);
 			sceneShader.setDependencies(lightMapOut, sceneVertexBuffer, sceneUVBuffer);
+		}
+		
+		public function setShift(dx:Number, dy:Number):void
+		{
+			_shiftX = dx;
+			_shiftY = dy;
 		}
 		
 		/**
@@ -260,9 +269,9 @@ package starling.extensions.lighting.core
 			var indexOffset:uint = 0;
 			var needsNewBuffer:Boolean;
 			
-			if (_geometryIsDirty)
+			if (true)//_geometryIsDirty)
 			{
-				trace(_geometryIsDirty);
+				//trace(_geometryIsDirty);
 				_geometryIsDirty = false;
 				vertices.length = 0;
 				indices.length = 0;
@@ -281,7 +290,7 @@ package starling.extensions.lighting.core
 						var index:uint = i * VERTICES_PER_EDGE + indexOffset;
 						var edge:Edge = edges[i];
 					
-						vertices.push(edge.start.x, edge.start.y, 0, edge.end.x, edge.end.y, 0, edge.end.x, edge.end.y, 1, edge.start.x, edge.start.y, 1);
+						vertices.push(edge.start.x + _shiftX, edge.start.y + _shiftY, 0, edge.end.x + _shiftX, edge.end.y + _shiftY, 0, edge.end.x + _shiftX, edge.end.y + _shiftY, 1, edge.start.x + _shiftX, edge.start.y + _shiftY, 1);
 						indices.push(index, index + 2, index + 1, index, index + 3, index + 2);
 					}
 					
@@ -330,7 +339,7 @@ package starling.extensions.lighting.core
 			switch(true)
 			{
 				case light is PointLight:
-					pointLightShadowShader.setDependencies(geometryVertexBuffer, PointLight(light).x, PointLight(light).y);
+					pointLightShadowShader.setDependencies(geometryVertexBuffer, PointLight(light).x + _shiftX, PointLight(light).y + _shiftY);
 					pointLightShadowShader.activate(context);
 					break;
 				case light is DirectionalLight:
@@ -338,8 +347,9 @@ package starling.extensions.lighting.core
 					directionalLightShadowShader.activate(context);
 					break;
 				case light is SpotLight:
-					pointLightShadowShader.setDependencies(geometryVertexBuffer, SpotLight(light).x, SpotLight(light).y);
+					pointLightShadowShader.setDependencies(geometryVertexBuffer, SpotLight(light).x + int(_shiftX), SpotLight(light).y + _shiftY);
 					pointLightShadowShader.activate(context);
+					trace(_shiftX, _shiftY, SpotLight(light).x);
 					break;
 				default:
 					throw new ArgumentError("unsupported light type");

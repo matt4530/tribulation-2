@@ -38,7 +38,7 @@ package com.profusiongames.trib
 			map.getEntityLayer().addChild(player);
 			
 			//lightLayer.addLight(new SpotLight(400, 400, 600, -90, 60, 20, 0x00ff00, 1));
-			spawnInitialZombies();
+			//spawnInitialZombies();
 			map.addChild(lightLayer);
 			
 			addEventListener(EnterFrameEvent.ENTER_FRAME, frame);
@@ -59,6 +59,8 @@ package com.profusiongames.trib
 				}
 			}
 			map.update(player);
+			map.x -= 0.2;
+			lightLayer.setShift(map.x, map.y);
 		}
 		
 		public function spawnInitialZombies():void
