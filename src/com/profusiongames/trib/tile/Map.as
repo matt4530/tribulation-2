@@ -140,6 +140,8 @@ package com.profusiongames.trib.tile
 		{
 			//x = -player.x / 2;
 			//y = -player.y / 2;
+			x = -player.x + 640 / 2;
+			y = -player.y + 480 / 2;
 		}
 		
 		private function loadMap(map:String):void 

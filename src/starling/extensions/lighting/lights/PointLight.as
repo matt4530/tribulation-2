@@ -8,6 +8,8 @@ package starling.extensions.lighting.lights
 	{
 		private var _x:int;
 		private var _y:int;
+		private var _shiftX:int = 0;
+		private var _shiftY:int = 0;
 		private var _radius:int;
 		
 		/**
@@ -30,7 +32,7 @@ package starling.extensions.lighting.lights
 
 		public function get x():int
 		{
-			return _x;
+			return _x + _shiftX;
 		}
 
 		public function set x(x:int):void
@@ -40,7 +42,7 @@ package starling.extensions.lighting.lights
 
 		public function get y():int
 		{
-			return _y;
+			return _y + _shiftY;
 		}
 
 		public function set y(y:int):void
@@ -56,6 +58,26 @@ package starling.extensions.lighting.lights
 		public function set radius(radius:int):void
 		{
 			_radius = radius;
+		}
+		
+		public function get shiftX():int 
+		{
+			return _shiftX;
+		}
+		
+		public function set shiftX(value:int):void 
+		{
+			_shiftX = value;
+		}
+		
+		public function get shiftY():int 
+		{
+			return _shiftY;
+		}
+		
+		public function set shiftY(value:int):void 
+		{
+			_shiftY = value;
 		}
 	}
 }

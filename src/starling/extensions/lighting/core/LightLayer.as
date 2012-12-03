@@ -159,6 +159,19 @@ package starling.extensions.lighting.core
 		{
 			_shiftX = dx;
 			_shiftY = dy;
+			for (var i:int = 0; i < lights.length; i++)
+			{
+				if (lights[i] is PointLight) 
+				{ 
+					(lights[i] as PointLight).shiftX = _shiftX;
+					(lights[i] as PointLight).shiftY = _shiftY;
+				}
+				else if (lights[i] is SpotLight)
+				{
+					(lights[i] as SpotLight).shiftX = _shiftX;
+					(lights[i] as SpotLight).shiftY = _shiftY;
+				}
+			}
 		}
 		
 		/**
@@ -339,7 +352,7 @@ package starling.extensions.lighting.core
 			switch(true)
 			{
 				case light is PointLight:
-					pointLightShadowShader.setDependencies(geometryVertexBuffer, PointLight(light).x + _shiftX, PointLight(light).y + _shiftY);
+					pointLightShadowShader.setDependencies(geometryVertexBuffer, PointLight(light).x, PointLight(light).y);
 					pointLightShadowShader.activate(context);
 					break;
 				case light is DirectionalLight:
@@ -347,7 +360,7 @@ package starling.extensions.lighting.core
 					directionalLightShadowShader.activate(context);
 					break;
 				case light is SpotLight:
-					pointLightShadowShader.setDependencies(geometryVertexBuffer, SpotLight(light).x + int(_shiftX), SpotLight(light).y + _shiftY);
+					pointLightShadowShader.setDependencies(geometryVertexBuffer, SpotLight(light).x, SpotLight(light).y);
 					pointLightShadowShader.activate(context);
 					trace(_shiftX, _shiftY, SpotLight(light).x);
 					break;

@@ -59,7 +59,7 @@ package com.profusiongames.trib
 				}
 			}
 			map.update(player);
-			map.x -= 0.2;
+			//map.x -= 0.2;
 			lightLayer.setShift(map.x, map.y);
 		}
 		

@@ -6,6 +6,7 @@ package com.profusiongames.trib.beings
 	import com.profusiongames.trib.weapons.Pistol;
 	import com.profusiongames.trib.weapons.Weapon;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import starling.display.Quad;
 	import starling.events.Event;
 	import starling.events.KeyboardEvent;
@@ -88,7 +89,7 @@ package com.profusiongames.trib.beings
 			if (touch.phase == TouchPhase.BEGAN)
 			{
 				_mousePressed = true;
-				var p:PointLight = new PointLight(touch.globalX, touch.globalY, 200, 0xDDDDDD, 1);
+				var p:PointLight = new PointLight(_stageMouseX, _stageMouseY, 200, 0xDDDDDD, 1);
 				_lightLayer.addLight(p);
 			}
 			else if (touch.phase == TouchPhase.ENDED)
@@ -97,8 +98,11 @@ package com.profusiongames.trib.beings
 			}
 			else if (touch.phase == TouchPhase.HOVER || touch.phase == TouchPhase.MOVED)
 			{
-				_stageMouseX = touch.globalX;
-				_stageMouseY = touch.globalY;
+				var mp:Point = touch.getLocation(_map);
+				_stageMouseX = mp.x;
+				_stageMouseY = mp.y;
+				//_stageMouseX = touch.globalX;
+				//_stageMouseY = touch.globalY;
 			}
 		}
 		
