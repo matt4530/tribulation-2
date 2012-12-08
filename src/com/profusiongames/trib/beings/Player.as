@@ -7,6 +7,7 @@ package com.profusiongames.trib.beings
 	import com.profusiongames.trib.weapons.Weapon;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import starling.core.Starling;
 	import starling.display.Quad;
 	import starling.events.Event;
 	import starling.events.KeyboardEvent;
@@ -42,6 +43,8 @@ package com.profusiongames.trib.beings
 		private var _flashlight:SpotLight = new SpotLight(0, 0, 300, 0, 60, 40, 0xffffff, 1);
 		private var _stageMouseX:Number = 0;
 		private var _stageMouseY:Number = 0;
+		private var _lastMapX:Number = 0;//cache for mouse not moving
+		private var _lastMapY:Number = 0;//cache for mouse not moving
 		private var _radians:Number = 0;
 		
 		private var _weapon:Weapon = new Pistol();
@@ -101,6 +104,8 @@ package com.profusiongames.trib.beings
 				var mp:Point = touch.getLocation(_map);
 				_stageMouseX = mp.x;
 				_stageMouseY = mp.y;
+				_lastMapX = _map.x;
+				_lastMapY = _map.y;
 				//_stageMouseX = touch.globalX;
 				//_stageMouseY = touch.globalY;
 			}
@@ -196,7 +201,7 @@ package com.profusiongames.trib.beings
 		{
 			_flashlight.x = x;
 			_flashlight.y = y;
-			_flashlight.directionRadians = _radians = Math.atan2(_stageMouseY - y, _stageMouseX -x);
+			_flashlight.directionRadians = _radians = Math.atan2(_stageMouseY - y - (_map.y - _lastMapY), _stageMouseX - x - (_map.x - _lastMapX));
 		}
 		
 		public function getRadians():Number

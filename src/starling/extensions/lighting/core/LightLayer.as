@@ -362,7 +362,7 @@ package starling.extensions.lighting.core
 				case light is SpotLight:
 					pointLightShadowShader.setDependencies(geometryVertexBuffer, SpotLight(light).x, SpotLight(light).y);
 					pointLightShadowShader.activate(context);
-					trace(_shiftX, _shiftY, SpotLight(light).x);
+					//trace(_shiftX, _shiftY, SpotLight(light).x);
 					break;
 				default:
 					throw new ArgumentError("unsupported light type");
