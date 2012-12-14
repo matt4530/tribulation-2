@@ -89,6 +89,7 @@ package com.profusiongames.trib.beings
 		private function onTouch(e:TouchEvent):void 
 		{
 			var touch:Touch = e.getTouch(stage);
+			if (touch == null) return;
 			if (touch.phase == TouchPhase.BEGAN)
 			{
 				_mousePressed = true;

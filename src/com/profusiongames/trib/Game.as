@@ -28,7 +28,7 @@ package com.profusiongames.trib
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
-			lightLayer = new LightLayer(640, 480, 0xFFFFFF,0,0);
+			lightLayer = new LightLayer(640, 480, 0xFFFFFF, 0, 0);
 			
 			map = new Map();
 			map.buildMap("1", lightLayer);
@@ -39,8 +39,8 @@ package com.profusiongames.trib
 			
 			//lightLayer.addLight(new SpotLight(400, 400, 600, -90, 60, 20, 0x00ff00, 1));
 			//spawnInitialZombies();
-			map.addChild(lightLayer);
-			
+			//map.addChild(lightLayer);
+			map.scaleX = map.scaleY = 0.6;
 			addEventListener(EnterFrameEvent.ENTER_FRAME, frame);
 		}
 		
@@ -58,8 +58,7 @@ package com.profusiongames.trib
 					i--;
 				}
 			}
-			map.update(player);
-			//map.x -= 0.2;
+			//map.update(player);
 			lightLayer.setShift(map.x, map.y);
 		}
 		

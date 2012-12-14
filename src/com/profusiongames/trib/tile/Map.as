@@ -144,21 +144,7 @@ package com.profusiongames.trib.tile
 			y = -player.y + 480 / 2;
 		}
 		
-		private function loadMap(map:String):void 
-		{
-			layout =  [
-				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
-				[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2], 
-				[2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2], 
-				[2, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2], 
-				[2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2], 
-				[2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2],
-				[2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2],
-				[2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-				[2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-			];
-		}
+		
 		
 		private function createGeometry(lightLayer:LightLayer):void 
 		{
@@ -208,6 +194,207 @@ package com.profusiongames.trib.tile
 					_nodes.push(node);*/
 				}
 			}	
+		}
+		
+		private function loadMap(map:String):void 
+		{
+			/*layout =  [
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2], 
+				[2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2], 
+				[2, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2], 
+				[2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2], 
+				[2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2],
+				[2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2],
+				[2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+				[2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+			];*/
+			layout =  [
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+			];
+			maskBorder();
+			createRooms();
+			removeExcessDoors();
+		}
+		
+		private function maskBorder():void 
+		{
+			var bottom:Array = layout[0].slice();
+			var top:Array = layout[0].slice();
+			trace(layout.length);
+			layout.unshift(bottom);
+			layout.push(top);
+			for (var k:int = 1; k < layout.length-1; k++)
+			{
+				layout[k].push(2,2);
+			}
+			
+		}
+		
+		private function removeExcessDoors():void 
+		{
+			for (var j:int = 1; j < layout[0].length-1; j++)
+			{
+				for (var k:int = 1; k < layout.length-1; k++)
+				{
+					if (layout[k][j] == 3)
+					{
+						var count:int = 0;
+						for (var dj:int = 0; dj < 3; dj++)
+						{
+							for (var dk:int = 0; dk < 3; dk++)
+							{
+								if (layout[k - 1 + dk][j - 1 + dj] == 1)
+									count++;
+									//trace(count);
+							}
+						}
+						if (count > 7)
+							layout[k][j] = 1;
+					}
+				}
+			}
+		}
+		
+		private function createRooms():void 
+		{
+			var count:int = 9;
+			var maxWidth:int = 8;
+			var maxHeight:int = 8;
+			var minWidth:int = 3;
+			var minHeight:int = 3;
+			
+			for (var i:int = 0; i < count; i++)
+			{
+				var w:int = int(Math.random() * (maxWidth - minWidth)) + minWidth;
+				var h:int = int(Math.random() * (maxHeight - minHeight)) + minHeight;
+				var rx:int = 0;
+				var ry:int = 0;
+				do {
+					rx = int(Math.random() * (layout[0].length - 2)) + 1;
+					ry = int(Math.random() * (layout.length - 2)) +  1;
+				} while (!isValidRoomLocation(rx,ry, w, h));
+				trace("Selected Room @ ", rx, ry, w, h);
+				fillRoom(rx, ry, w, h);
+				generateDoorPlacements(rx, ry, w, h);
+			}
+		}
+		
+		private function generateDoorPlacements(rx:int, ry:int, w:int, h:int):void 
+		{
+			var area:int = w * h;
+			var doorCount:int = area < 10 ? 1 : area < 20 ? 2 : 3;
+			var perimiterCount:int = w * 2 + h * 2 - 8;
+			var doors:Array = [];
+			for (var i:int = 0; i < doorCount; i++)
+			{
+				var doorIndex:int = 0;
+				do {
+					doorIndex = int(Math.random() * perimiterCount);
+				}while (!isValidDoorLocation(doors,doorIndex));
+				doors.push(doorIndex);
+			}
+			
+			var perimiterLocs:Array = [];
+			var j:int = 0;
+			for (j = rx; j < rx + w; j++)
+			{
+				perimiterLocs.push([j, ry]);
+			}
+			for (j = ry; j < ry + h; j++)
+			{
+				perimiterLocs.push([rx + w-1, j]);
+			}
+			for (j = rx + w-1; j >= rx; j--)
+			{
+				perimiterLocs.push([j, ry + h-1]);
+			}
+			for (j = ry + h-1; j >= ry ; j--)
+			{
+				perimiterLocs.push([rx, j]);
+			}
+			for (j = 0; j < doors.length; j++)
+			{
+				var loc:Array = perimiterLocs[doors[j]];
+				layout[loc[1]][loc[0]] = 3;
+			}
+			/*for (j = 0; j < perimiterLocs.length; j++)
+			{
+				var loc:Array = perimiterLocs[j];
+				layout[loc[1]][loc[0]] = 3;
+			}*/
+			
+			/*for (var k:int = ry; k < ry + h; k++)
+				{
+					if (k == ry || k == ry + h - 1 || j == rx || j == rx + w -1)
+					{
+						if (doors.indexOf(index) != -1) 
+							layout[k][j] = 3;
+						index++;
+					}
+				}*/
+		}
+		
+		private function isValidDoorLocation(doors:Array, doorIndex:int):Boolean
+		{
+			if (doors.indexOf(doorIndex) != -1) return false;
+			
+			for (var i:int = 0; i < doors.length; i++)
+			{
+				if (Math.abs(doors[i] - doorIndex) < 3) return false;
+			}
+			return true;
+		}
+		
+		private function fillRoom(rx:int, ry:int, w:int, h:int):void 
+		{
+			for (var j:int = rx; j < rx + w; j++)
+			{
+				for (var k:int = ry; k < ry + h; k++)
+				{
+					layout[k][j] = 1;
+				}
+			}
+		}
+		
+		private function isValidRoomLocation(rx:int, ry:int, w:int, h:int):Boolean
+		{
+			rx -= 1;
+			ry -= 1;
+			w += 1;
+			h += 1;
+			if (ry + h+1 > layout.length) return false;
+			if (rx + w+1 > layout[0].length) return false;
+			var count:int = 0;
+			for (var j:int = rx; j < rx + w; j++)
+			{
+				for (var k:int = ry; k < ry + h; k++)
+				{
+					if (layout[k][j] != 2) count++;
+				}
+			}
+			if (count / (w * h) > 0.15) return false; //if it already has 80% of the room in open air, regenerate
+			return true;
 		}
 	}
 }
