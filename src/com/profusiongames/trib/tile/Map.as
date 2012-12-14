@@ -1,8 +1,11 @@
 package com.profusiongames.trib.tile 
 {
 	import com.profusiongames.trib.beings.Player;
+	import com.profusiongames.trib.util.AStar;
+	import com.profusiongames.trib.util.MapUtil;
 	import com.profusiongames.trib.util.Node;
 	import flash.display.Stage;
+	import flash.geom.Point;
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.Image;
@@ -38,6 +41,7 @@ package com.profusiongames.trib.tile
 		//private var lights:Vector.<PointLight>;
 		private var _tiles:Vector.<Tile>;
 		private var _floorLevelTiles:Vector.<Tile>
+		private var _rooms:Vector.<Room>
 		//private var _nodes:Array;
 		
 		private var _dir:Number = 0;
@@ -115,8 +119,13 @@ package com.profusiongames.trib.tile
 		public function buildMap(map:String, lightLayer:LightLayer):void
 		{
 			loadMap(map);
-			drawMap(lightLayer);
-			createGeometry(lightLayer);
+			drawMap();
+			generateRooms();
+			setAllTiles();
+			generatePathways();
+			setAllTiles();
+			redraw();
+			//createGeometry(lightLayer);
 		}
 		
 		public function getTileAt(dx:int, dy:int):Tile
@@ -126,6 +135,7 @@ package com.profusiongames.trib.tile
 		
 		public function getTileAtSlots(dx:int, dy:int):Tile
 		{
+			if (dx == -1 || dy == -1 || dx >= layout[0].length || dy >= layout.length) return null;
 			return _tiles[dy * layout[0].length + dx];
 		}
 		
@@ -133,7 +143,10 @@ package com.profusiongames.trib.tile
 		{
 			return _floorLevelTiles;
 		}
-		
+		public function getTiles():Vector.<Tile>
+		{
+			return _tiles;
+		}
 		
 		
 		public function update(player:Player):void 
@@ -147,17 +160,88 @@ package com.profusiongames.trib.tile
 		private function loadMap(map:String):void 
 		{
 			layout =  [
-				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 
-				[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2], 
-				[2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2], 
-				[2, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2], 
-				[2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2], 
-				[2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2],
-				[2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2],
-				[2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-				[2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
 			];
+		}
+		
+		private function generateRooms():void 
+		{
+			_rooms = new Vector.<Room>();
+			var mapWidth:int = layout[0].length;
+			var mapHeight:int = layout.length;
+			var numRooms:int = 2;
+			var rWidthMax:int = 7;
+			var rWidthMin:int = 3;
+			var rHeightMax:int = 7;
+			var rHeightMin:int = 3;
+			numRoomsWhile: while (numRooms > 0)
+			{
+				numRooms--;
+				var r:Room = new Room();
+				var innerWhileCount:int = 0;
+				do {
+					r.width = int(Math.random() * (rWidthMax - rWidthMin)) + rWidthMin;
+					r.height = int(Math.random() * (rHeightMax - rHeightMin)) + rHeightMin;
+					r.x = 1 + int(Math.random() * (mapWidth - 1 - r.width));
+					r.y = 1 + int(Math.random() * (mapHeight - 1 - r.height));
+					r.generateDoors();
+					innerWhileCount++;
+					if (innerWhileCount > 50)
+					{
+						break numRoomsWhile;
+					}
+				}while (!MapUtil.isValidRoomLocation(layout, r));
+				r.draw(layout);
+				_rooms.push(r);
+			}
+		}
+		
+		private function generatePathways():void 
+		{
+			for (var k:int = 0; k < _rooms.length; k++)
+			{
+				for (var j:int = k+1; j < _rooms.length; j++)
+				{
+					var r:Room = _rooms[k];
+					var r2:Room = _rooms[j];
+					var rDoor:Point = r.doorAt(0);
+					var r2Door:Point = r2.doorAt(0);
+					trace(rDoor.x, rDoor.y, r2Door.x, r2Door.y);
+					var t:Array = AStar.aStar(getTileAtSlots(rDoor.x, rDoor.y), getTileAtSlots(r2Door.x, r2Door.y));// , _tiles[567]);
+					if (t == null)
+						trace("no path");
+					else
+					{
+						for (var i:int = 0; i < t.length; i++)
+						{
+							t[i].setTile(1);
+							layout[t[i].dy][t[i].dx] = t[i].frame;
+						}
+					}
+				}
+			}
 		}
 		
 		private function createGeometry(lightLayer:LightLayer):void 
@@ -177,7 +261,7 @@ package com.profusiongames.trib.tile
 			
 		}
 		
-		private function drawMap(lightLayer:LightLayer):void
+		private function drawMap():void
 		{
 			_tiles = new Vector.<Tile>();
 			_floorLevelTiles = new Vector.<Tile>();
@@ -189,6 +273,8 @@ package com.profusiongames.trib.tile
 				for (var j:uint = 0; j<mapWidth; ++j)
 				{
 					tmpTile = new Tile(layout[i][j]);
+					tmpTile.dx = j;
+					tmpTile.dy = i;
 					tmpTile.x = j*tileW + offsetX;
 					tmpTile.y = i * tileH + offsetY; 
 					if (tmpTile.isFloorLevel())
@@ -208,6 +294,44 @@ package com.profusiongames.trib.tile
 					_nodes.push(node);*/
 				}
 			}	
+		}
+		
+		private function redraw():void
+		{
+			var mapWidth:uint = this.layout[0].length;
+			var mapHeight:uint = this.layout.length;
+			var count:int = 0;
+			for (var i:uint = 0; i<mapHeight; ++i)
+			{
+				for (var j:uint = 0; j<mapWidth; ++j)
+				{
+					_tiles[count].draw();
+					count++;
+				}
+			}
+		}
+		
+		private function setAllTiles():void
+		{
+			var mapWidth:uint = this.layout[0].length;
+			var mapHeight:uint = this.layout.length;
+			var count:int = 0;
+			for (var i:uint = 0; i<mapHeight; ++i)
+			{
+				for (var j:uint = 0; j<mapWidth; ++j)
+				{
+					_tiles[count].setTile(layout[i][j]);
+					count++;
+				}
+			}
+		}
+		
+		public function reset():void
+		{
+			for (var i:int = 0; i < _tiles.length; i++)
+			{
+				_tiles[i].reset();
+			}
 		}
 	}
 }

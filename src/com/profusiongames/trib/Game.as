@@ -2,6 +2,7 @@ package com.profusiongames.trib
 {
 	import com.profusiongames.trib.beings.Player;
 	import com.profusiongames.trib.beings.Zombie;
+	import com.profusiongames.trib.editor.Editor;
 	import com.profusiongames.trib.tile.Map;
 	import com.profusiongames.trib.tile.Tile;
 	import com.profusiongames.trib.util.ZombieList;
@@ -16,6 +17,7 @@ package com.profusiongames.trib
 	 */
 	public class Game extends Sprite
 	{
+		private var editor:Editor;
 		private var map:Map;
 		private var player:Player;
 		private var lightLayer:LightLayer;
@@ -39,7 +41,11 @@ package com.profusiongames.trib
 			
 			//lightLayer.addLight(new SpotLight(400, 400, 600, -90, 60, 20, 0x00ff00, 1));
 			//spawnInitialZombies();
-			map.addChild(lightLayer);
+			//map.addChild(lightLayer);
+			map.scaleX = map.scaleY = 0.6;
+			
+			editor = new Editor();
+			addChild(editor);
 			
 			addEventListener(EnterFrameEvent.ENTER_FRAME, frame);
 		}
@@ -58,7 +64,7 @@ package com.profusiongames.trib
 					i--;
 				}
 			}
-			map.update(player);
+			//map.update(player);
 			//map.x -= 0.2;
 			lightLayer.setShift(map.x, map.y);
 		}
