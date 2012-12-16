@@ -23,14 +23,18 @@ package com.profusiongames.trib.util
 			return s;
 		}
 		
-		public static function isValidRoomLocation(layout:Array, r:Room):Boolean
+		public static function isValidRoomLocation(map:Map, r:Room):Boolean
 		{
+			if (r.x + r.width > map.mapWidth-1) return false;
+			if (r.y + r.height > map.mapHeight-1) return false;
+			if (r.x < 1 || r.y  < 1) return false;
+			
 			var tilesAlreadyRoom:int = 0;
 			for (var i:int = r.x; i < r.x + r.width; i++)
 			{
 				for (var j:int = r.y; j < r.y + r.height; j++)
 				{
-					if (layout[j][i] != 2)
+					if (map.getTileAtSlots(i,j).frame != 2)
 						tilesAlreadyRoom++;
 				}
 			}

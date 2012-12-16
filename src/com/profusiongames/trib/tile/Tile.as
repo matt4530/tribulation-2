@@ -20,11 +20,12 @@ package com.profusiongames.trib.tile
 		public var dy:int = 0;
 		public var isClosed:Boolean = false;
 		public var isOpen:Boolean = false;
-		public var isWalkable:Boolean = true;
+		private var _isPathWalkable:Boolean = true;
 		private var _neighbors:Array;
 		public var dParent:Tile;
 		
-		
+		private var _isBorderTile:Boolean;
+		private var _isDoor:Boolean;
 		private static var _bitmap:Bitmap;
 		private static var _texture:Texture;
 		private static var _atlas:TextureAtlas;
@@ -37,7 +38,7 @@ package com.profusiongames.trib.tile
 		[Embed(source="../../../../assets/graphics/tiles/tilesheet.png")]
 		public const TileSheet:Class;
 		
-		public var frame:uint;
+		private var _frame:uint;
 		
 		public function Tile(frame:uint=0)
 		{
@@ -68,13 +69,6 @@ package com.profusiongames.trib.tile
 			return (frame == 0 || frame == 1 || frame == 3);
 		}
 		
-		public function setTile(tile:int):void 
-		{
-			frame = tile;
-			isWalkable = !isFloorLevel();
-			dirtyImage = true;
-		}
-		
 		public function get neighbors():Array 
 		{
 			if(!_neighbors) {
@@ -96,6 +90,48 @@ package com.profusiongames.trib.tile
 				}
 			}
 			return _neighbors;
+		}
+		
+		public function get isDoor():Boolean 
+		{
+			return _isDoor;
+		}
+		
+		public function set isDoor(value:Boolean):void 
+		{
+			_isDoor = value;
+		}
+		
+		public function get frame():uint 
+		{
+			return _frame;
+		}
+		
+		public function set frame(value:uint):void 
+		{
+			_frame = value;
+			dirtyImage = true;
+		}
+		
+		public function get isPathWalkable():Boolean 
+		{
+			if (isDoor) return true;
+			return frame != -1 && !isBorderTile;
+		}
+		
+		public function set isPathWalkable(value:Boolean):void 
+		{
+			_isPathWalkable = value;
+		}
+		
+		public function get isBorderTile():Boolean 
+		{
+			return _isBorderTile;
+		}
+		
+		public function set isBorderTile(value:Boolean):void 
+		{
+			_isBorderTile = value;
 		}
 		
 		public function reset():void

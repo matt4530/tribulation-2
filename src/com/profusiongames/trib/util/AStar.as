@@ -37,7 +37,7 @@ package com.profusiongames.trib.util {
 				currentTile.isClosed = true;
 				var n:Array = currentTile.neighbors;
 				for(var i:int = 0; i < n.length; i++) {
-					if(n[i] == null || !n[i].isWalkable) {
+					if(n[i] == null || !n[i].isPathWalkable) {
 						continue;
 					}
 					if(!n[i].isOpen && !n[i].isClosed) {

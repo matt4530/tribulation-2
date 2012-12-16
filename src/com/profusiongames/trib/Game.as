@@ -4,6 +4,7 @@ package com.profusiongames.trib
 	import com.profusiongames.trib.beings.Zombie;
 	import com.profusiongames.trib.editor.Editor;
 	import com.profusiongames.trib.tile.Map;
+	import com.profusiongames.trib.tile.Room;
 	import com.profusiongames.trib.tile.Tile;
 	import com.profusiongames.trib.util.ZombieList;
 	import starling.display.Sprite;
@@ -40,9 +41,9 @@ package com.profusiongames.trib
 			map.getEntityLayer().addChild(player);
 			
 			//lightLayer.addLight(new SpotLight(400, 400, 600, -90, 60, 20, 0x00ff00, 1));
-			//spawnInitialZombies();
+			spawnInitialZombies();
 			//map.addChild(lightLayer);
-			map.scaleX = map.scaleY = 0.6;
+			//map.scaleX = map.scaleY = 0.6;
 			
 			editor = new Editor();
 			addChild(editor);
@@ -64,14 +65,14 @@ package com.profusiongames.trib
 					i--;
 				}
 			}
-			//map.update(player);
+			map.update(player);
 			//map.x -= 0.2;
 			lightLayer.setShift(map.x, map.y);
 		}
 		
 		public function spawnInitialZombies():void
 		{
-			var freeTiles:Vector.<Tile> = map.getFloorLevelTiles();
+			/*var freeTiles:Vector.<Tile> = map.getFloorLevelTiles();
 			var randomLocs:Array = [];
 			var startingNumberZombies:int = 25;
 			for (var i:int = 0; i < startingNumberZombies; i++)
@@ -93,7 +94,28 @@ package com.profusiongames.trib
 				z.y = freeTiles[index].y + freeTiles[index].height/2;
 				map.getEntityLayer().addChild(z);
 				ZombieList.addZombie(z);
+			}*/
+			var rooms:Vector.<Room> = map.rooms;
+			var startingNumberZombies:int = 45; //this isn't anything. There can be as many as n + n/5
+			var averageZombiesPerRoom:int = startingNumberZombies / rooms.length;
+			for (var i:int = 0; i < rooms.length; i++)
+			{
+				var zombiesThisRoom:int = Math.random() * (startingNumberZombies / 5) + averageZombiesPerRoom;
+				for (var k:int = 0; k < zombiesThisRoom; k++)
+				{
+					var centerTile:Tile = rooms[i].getCenterTile(map);
+					var z:Zombie = ZombieList.makeZombie();
+					z.isAlive = true;
+					z.x = centerTile.x + Math.random()*10-5;
+					z.y = centerTile.y + Math.random()*10-5;
+					map.getEntityLayer().addChild(z);
+					ZombieList.addZombie(z);
+				}
 			}
+			
+			var t:Tile = rooms[0].getCenterTile(map);
+			player.x = t.x;
+			player.y = t.y;
 			
 		}
 		

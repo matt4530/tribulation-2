@@ -6,6 +6,7 @@ package com.profusiongames.trib.tile
 	import com.profusiongames.trib.util.Node;
 	import flash.display.Stage;
 	import flash.geom.Point;
+	import org.flashdevelop.utils.FlashConnect;
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.Image;
@@ -45,6 +46,9 @@ package com.profusiongames.trib.tile
 		//private var _nodes:Array;
 		
 		private var _dir:Number = 0;
+		
+		public var mapWidth:int = 0;
+		public var mapHeight:int = 0;
 		
 		public function Map()
 		{
@@ -120,12 +124,16 @@ package com.profusiongames.trib.tile
 		{
 			loadMap(map);
 			drawMap();
+			FlashConnect.atrace("generate rooms");
 			generateRooms();
-			setAllTiles();
+			//setAllTiles();
+			FlashConnect.atrace("generate rooms 2");
 			generatePathways();
-			setAllTiles();
+			generateEntrace();
+			generateExit();
+			//setAllTiles();
 			redraw();
-			//createGeometry(lightLayer);
+			createGeometry(lightLayer);
 		}
 		
 		public function getTileAt(dx:int, dy:int):Tile
@@ -184,14 +192,15 @@ package com.profusiongames.trib.tile
 				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
 				[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
 			];
+			
+			mapWidth = layout[0].length;
+			mapHeight = layout.length;
 		}
 		
 		private function generateRooms():void 
 		{
 			_rooms = new Vector.<Room>();
-			var mapWidth:int = layout[0].length;
-			var mapHeight:int = layout.length;
-			var numRooms:int = 2;
+			var numRooms:int = 10;
 			var rWidthMax:int = 7;
 			var rWidthMin:int = 3;
 			var rHeightMax:int = 7;
@@ -204,16 +213,16 @@ package com.profusiongames.trib.tile
 				do {
 					r.width = int(Math.random() * (rWidthMax - rWidthMin)) + rWidthMin;
 					r.height = int(Math.random() * (rHeightMax - rHeightMin)) + rHeightMin;
-					r.x = 1 + int(Math.random() * (mapWidth - 1 - r.width));
-					r.y = 1 + int(Math.random() * (mapHeight - 1 - r.height));
+					r.x = 1 + int(Math.random() * (mapWidth - 2 - r.width));
+					r.y = 1 + int(Math.random() * (mapHeight - 2 - r.height));
 					r.generateDoors();
 					innerWhileCount++;
 					if (innerWhileCount > 50)
 					{
 						break numRoomsWhile;
 					}
-				}while (!MapUtil.isValidRoomLocation(layout, r));
-				r.draw(layout);
+				}while (!MapUtil.isValidRoomLocation(this, r));
+				r.draw(this);
 				_rooms.push(r);
 			}
 		}
@@ -224,24 +233,35 @@ package com.profusiongames.trib.tile
 			{
 				for (var j:int = k+1; j < _rooms.length; j++)
 				{
+					if (Math.random() < 0.4) continue;//don't do pathing 20% of the time.
 					var r:Room = _rooms[k];
 					var r2:Room = _rooms[j];
 					var rDoor:Point = r.doorAt(0);
 					var r2Door:Point = r2.doorAt(0);
-					trace(rDoor.x, rDoor.y, r2Door.x, r2Door.y);
+					FlashConnect.atrace(rDoor.x, rDoor.y, r2Door.x, r2Door.y, getTileAtSlots(rDoor.x, rDoor.y).frame, getTileAtSlots(rDoor.x, rDoor.y).isDoor);
 					var t:Array = AStar.aStar(getTileAtSlots(rDoor.x, rDoor.y), getTileAtSlots(r2Door.x, r2Door.y));// , _tiles[567]);
 					if (t == null)
-						trace("no path");
+						FlashConnect.atrace("no path");
 					else
 					{
 						for (var i:int = 0; i < t.length; i++)
 						{
-							t[i].setTile(1);
-							layout[t[i].dy][t[i].dx] = t[i].frame;
+							t[i].frame = 1;
+							//layout[t[i].dy][t[i].dx] = t[i].frame;
 						}
 					}
 				}
 			}
+		}
+		
+		private function generateExit():void 
+		{
+			
+		}
+		
+		private function generateEntrace():void 
+		{
+			
 		}
 		
 		private function createGeometry(lightLayer:LightLayer):void 
@@ -263,10 +283,9 @@ package com.profusiongames.trib.tile
 		
 		private function drawMap():void
 		{
+			FlashConnect.atrace("[Map] drawMap()");
 			_tiles = new Vector.<Tile>();
 			_floorLevelTiles = new Vector.<Tile>();
-			var mapWidth:uint = this.layout[0].length;
-			var mapHeight:uint = this.layout.length;
 			var tmpTile:Tile;
 			for (var i:uint = 0; i<mapHeight; ++i)
 			{
@@ -288,6 +307,9 @@ package com.profusiongames.trib.tile
 						_walls.addChild(tmpTile);
 					_tiles.push(tmpTile);
 					
+					if (i == 0 || j == 0 || i == mapHeight - 1 || j == mapWidth -1)
+						tmpTile.isBorderTile = true;
+					
 					/*var node:Node = new Node(j, i);
 					node.x = tmpTile.x;
 					node.y = tmpTile.y;
@@ -298,8 +320,6 @@ package com.profusiongames.trib.tile
 		
 		private function redraw():void
 		{
-			var mapWidth:uint = this.layout[0].length;
-			var mapHeight:uint = this.layout.length;
 			var count:int = 0;
 			for (var i:uint = 0; i<mapHeight; ++i)
 			{
@@ -311,7 +331,7 @@ package com.profusiongames.trib.tile
 			}
 		}
 		
-		private function setAllTiles():void
+		/*private function setAllTiles():void
 		{
 			var mapWidth:uint = this.layout[0].length;
 			var mapHeight:uint = this.layout.length;
@@ -324,7 +344,7 @@ package com.profusiongames.trib.tile
 					count++;
 				}
 			}
-		}
+		}*/
 		
 		public function reset():void
 		{
@@ -332,6 +352,11 @@ package com.profusiongames.trib.tile
 			{
 				_tiles[i].reset();
 			}
+		}
+		
+		public function get rooms():Vector.<Room> 
+		{
+			return _rooms;
 		}
 	}
 }

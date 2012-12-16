@@ -26,7 +26,7 @@ package
 			
 			starlingStage = new Starling(Game, stage, null, null, "auto", "baseline");
 			starlingStage.start();
-			//starlingStage.showStatsAt("left", "bottom");
+			starlingStage.showStatsAt("left", "bottom");
 			
 			//addChild(new Stats());
 		}
