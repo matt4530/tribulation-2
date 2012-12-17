@@ -4,6 +4,7 @@ package com.profusiongames.trib.beings
 	import com.profusiongames.trib.tile.Map;
 	import com.profusiongames.trib.tile.Tile;
 	import com.profusiongames.trib.util.Vector2D;
+	import org.flashdevelop.utils.FlashConnect;
 	import starling.display.Quad;
 	/**
 	 * ...

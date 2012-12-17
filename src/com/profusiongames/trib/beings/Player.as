@@ -3,10 +3,12 @@ package com.profusiongames.trib.beings
 	import com.profusiongames.trib.bullets.Bullet;
 	import com.profusiongames.trib.tile.Map;
 	import com.profusiongames.trib.tile.Tile;
+	import com.profusiongames.trib.util.Vector2D;
 	import com.profusiongames.trib.weapons.Pistol;
 	import com.profusiongames.trib.weapons.Weapon;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import org.flashdevelop.utils.FlashConnect;
 	import starling.core.Starling;
 	import starling.display.Quad;
 	import starling.events.Event;
@@ -25,12 +27,10 @@ package com.profusiongames.trib.beings
 	{
 		private static var instance:Player;
 		
-		private var _upPressed:Boolean = false;
-		private var _leftPressed:Boolean = false;
-		private var _rightPressed:Boolean = false;
-		private var _downPressed:Boolean = false;
+		private var _destination:Vector2D;
+		private var _speed:Vector2D;
+		private var _maxSpeed:int = 2;
 		private var _mousePressed:Boolean = false;
-		private var speed:int = 5;
 		
 		private var _halfHeight:int = 8;
 		private var _halfWidth:int = 8;
@@ -54,6 +54,9 @@ package com.profusiongames.trib.beings
 			_map = Map.getInstance();
 			_lightLayer = lightlayer;
 			isAlive = true;
+			
+			_destination = new Vector2D(0,0);
+			_speed = new Vector2D(0,0);
 			
 			var q:Quad = new Quad(_width, _height, 0xFF00FF);
 			q.x = -_halfWidth;
@@ -81,27 +84,52 @@ package com.profusiongames.trib.beings
 		private function init(e:Event):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-			stage.addEventListener(KeyboardEvent.KEY_UP, kUp);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, kDown);
+			//stage.addEventListener(KeyboardEvent.KEY_UP, kUp);
+			//stage.addEventListener(KeyboardEvent.KEY_DOWN, kDown);
 			stage.addEventListener(TouchEvent.TOUCH, onTouch);
 		}
 		
 		private function onTouch(e:TouchEvent):void 
 		{
 			var touch:Touch = e.getTouch(stage);
+			var mp:Point = touch.getLocation(_map);
 			if (touch.phase == TouchPhase.BEGAN)
 			{
 				_mousePressed = true;
 				var p:PointLight = new PointLight(_stageMouseX, _stageMouseY, 200, 0xDDDDDD, 1);
 				_lightLayer.addLight(p);
+				_destination.x = mp.x;
+				_destination.y = mp.y;
+				//_radians =  Math.atan2(_stageMouseY - y - (_map.y - _lastMapY), _stageMouseX - x - (_map.x - _lastMapX));
+				_radians =  Math.atan2(_destination.y - y, _destination.x - x);
+				_speed.x = _maxSpeed;
+				_speed.y = 0;
+				_speed.setAngle(_radians);
 			}
 			else if (touch.phase == TouchPhase.ENDED)
 			{
 				_mousePressed = false;
+				_destination.x = mp.x;
+				_destination.y = mp.y;
+				//_radians = Math.atan2(_stageMouseY - y - (_map.y - _lastMapY), _stageMouseX - x - (_map.x - _lastMapX));
+				_radians =  Math.atan2(_destination.y - y, _destination.x - x);
+				_speed.x = _maxSpeed;
+				_speed.y = 0;
+				var a:Number = _speed.length;
+				_speed.setAngle(_radians);
 			}
-			else if (touch.phase == TouchPhase.HOVER || touch.phase == TouchPhase.MOVED)
+			if (touch.phase == TouchPhase.MOVED)
 			{
-				var mp:Point = touch.getLocation(_map);
+				_destination.x = mp.x;
+				_destination.y = mp.y;
+				//_radians =  Math.atan2(_stageMouseY - y - (_map.y - _lastMapY), _stageMouseX - x - (_map.x - _lastMapX));
+				_radians =  Math.atan2(_destination.y - y, _destination.x - x);
+				_speed.x = _maxSpeed;
+				_speed.y = 0;
+				_speed.setAngle(_radians);
+			}
+			if (touch.phase == TouchPhase.HOVER || touch.phase == TouchPhase.MOVED)
+			{
 				_stageMouseX = mp.x;
 				_stageMouseY = mp.y;
 				_lastMapX = _map.x;
@@ -113,31 +141,34 @@ package com.profusiongames.trib.beings
 		
 		private function kDown(e:KeyboardEvent):void 
 		{
-			if (e.keyCode == 87) _upPressed = true;
-			else if (e.keyCode == 83) _downPressed = true;
-			if (e.keyCode == 68) _rightPressed = true;
-			else if (e.keyCode == 65) _leftPressed = true;
+			
 		}
 		
 		private function kUp(e:KeyboardEvent):void 
 		{
-			if (e.keyCode == 87) _upPressed = false;
-			else if (e.keyCode == 83) _downPressed = false;
-			else if (e.keyCode == 68) _rightPressed = false;
-			else if (e.keyCode == 65) _leftPressed = false;
+			
 		}
 		
 		public function move():void 
 		{
-			
 			var topLeft:Tile;
 			var topRight:Tile;
 			var bottomLeft:Tile;
 			var bottomRight:Tile;
-				
-			if (_leftPressed)
+			
+			
+			
+			
+			
+			
+			if (_speed.x < 0)//_leftPressed)
 			{
-				x -= speed;
+				x += _speed.x
+				if (x <= _destination.x) 
+				{
+					//x = _destination.x;
+					_speed.x = 0;
+				}
 				topLeft =_map.getTileAt(x - _halfWidth, y - _halfHeight);
 				bottomLeft = _map.getTileAt(x - _halfWidth, y + _halfHeight);
 				if (!topLeft.isFloorLevel() && x - _halfWidth < topLeft.x + topLeft.width)
@@ -148,10 +179,16 @@ package com.profusiongames.trib.beings
 				{
 					x = bottomLeft.x + topLeft.width + _halfWidth;
 				}
+				
 			}
-			else if (_rightPressed)
+			else if (_speed.x > 0)//_rightPressed)
 			{
-				x += speed;
+				x += _speed.x;
+				if (x >= _destination.x) 
+				{
+					//x = _destination.x;
+					_speed.x = 0;
+				}
 				topRight = _map.getTileAt(x + _halfWidth, y - _halfHeight);
 				bottomRight = _map.getTileAt(x + _halfWidth, y + _halfHeight);
 				if (!topRight.isFloorLevel() && x + _halfWidth > topRight.x)
@@ -165,9 +202,14 @@ package com.profusiongames.trib.beings
 			}				
 			
 			
-			if (_upPressed)
+			if (_speed.y < 0)//_upPressed)
 			{
-				y -= speed;
+				y += _speed.y;
+				if (y <= _destination.y) 
+				{
+					//y = _destination.y;
+					_speed.y = 0;
+				}
 				topLeft = _map.getTileAt(x - _halfWidth, y - _halfHeight);
 				topRight = _map.getTileAt(x + _halfWidth, y - _halfHeight);
 				//trace(topLeft.isFloorLevel(), topRight.isFloorLevel());
@@ -180,9 +222,14 @@ package com.profusiongames.trib.beings
 					y = topRight.y + topRight.height + _halfHeight;
 				}
 			}
-			else if (_downPressed)
+			else if (_speed.y > 0)//_downPressed)
 			{
-				y += speed;
+				y += _speed.y;
+				if (y >= _destination.y) 
+				{
+					//y = _destination.y;
+					_speed.y = 0;
+				}
 				bottomLeft = _map.getTileAt(x - _halfWidth, y + _halfHeight);
 				bottomRight = _map.getTileAt(x + _halfWidth, y + _halfHeight);
 				if (!bottomLeft.isFloorLevel() && y + _halfHeight > bottomLeft.y)
@@ -201,7 +248,7 @@ package com.profusiongames.trib.beings
 		{
 			_flashlight.x = x;
 			_flashlight.y = y;
-			_flashlight.directionRadians = _radians = Math.atan2(_stageMouseY - y - (_map.y - _lastMapY), _stageMouseX - x - (_map.x - _lastMapX));
+			_flashlight.directionRadians = _radians;
 		}
 		
 		public function getRadians():Number

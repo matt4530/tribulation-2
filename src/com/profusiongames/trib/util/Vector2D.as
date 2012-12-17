@@ -71,19 +71,22 @@ package com.profusiongames.trib.util
 		}
 
 		public function set angle(n:Number):void {
-			x = Math.cos(n)*length;
-			y = Math.sin(n)*length;
+			var l:Number = length;
+			x = Math.cos(n)*l;
+			y = Math.sin(n)*l;
 		}
 
 		public function set angleDeg(n:Number):void {
 			n *= 0.0174532925;
-			x = Math.cos(n)*length;
-			y = Math.sin(n)*length;
+			var l:Number = length;
+			x = Math.cos(n)*l;
+			y = Math.sin(n)*l;
 		}
 
 		public function setAngle(n:Number):Vector2D {
-			x = Math.cos(n)*length;
-			y = Math.sin(n) * length;
+			var l:Number = length;
+			x = Math.cos(n)*l;
+			y = Math.sin(n) * l;
 			return this;
 		}
 
@@ -198,6 +201,11 @@ package com.profusiongames.trib.util
 		public static function interpolate(v:Vector2D, v2:Vector2D, f:Number):Vector2D
 		{
 			return new Vector2D(f * v.x + (1 - f) * v2.x, f * v.y + (1 - f) * v2.y);
+		}
+		
+		public function toString():String
+		{
+			return "Vector2D{ " + x + ", " + y + " }";
 		}
 
 	} // end class
